@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "A primer on the Gumbel copula",
+    "section": "",
+    "text": "This website contains condensed information on the Gumbel copula. I did it initially for myself, but hopefully this can be useful for you as well.\n\nDefinition\nThe bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is defined by, for all \\((u,v)\\in ]0,1]^2\\), \\[\nC_{\\theta}\\left( u, v \\right) := \\exp\\left( (-\\ln(u))^{\\theta} + (-\\ln(v))^{\\theta} \\right)^{\\frac{1}{\\theta}}\n\\]\n\n\nKendall’s tau\nThe Kendall’s tau of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n1 - \\frac{1}{\\theta}\n\\]\n\n\nCoefficient of upper tail dependency\nThe coefficient of upper tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n2 - 2^{\\frac{1}{\\theta}}\n\\]\n\n\nLower tail dependency\nThe coefficient of lower tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\(0\\).\n\n\nSimulation with R\nThe script below creates simulations of the bivariate Gumbel copula with R, using the copula package.\n\n# Install the copula package if you haven't already\ninstall.packages(\"copula\")\n\n# Load the copula package\nlibrary(copula)\n\n# Define the parameter for the Gumbel copula (e.g., theta = 2)\ntheta &lt;- 2\n\n# Create a Gumbel copula object\ngumbel_copula &lt;- gumbelCopula(theta, dim = 2)\n\n# Generate random samples from the Gumbel copula\nn_samples &lt;- 100  # Number of samples\nsamples &lt;- rCopula(n_samples, gumbel_copula)\n\n# Print the first few samples\nhead(samples)"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Created by a passionate actuary 😀"
+  }
+]
