@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "A primer on the Gumbel copula",
+    "title": "The bivariate Gumbel copula",
     "section": "",
-    "text": "This website contains condensed information on the Gumbel copula. I did it initially for myself, but hopefully this can be useful for you as well.\nThis website was built and published to Github Pages using quarto.\n\nDefinition\nThe bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is defined by, for all \\((u,v)\\in ]0,1]^2\\), \\[\nC_{\\theta}\\left( u, v \\right) := \\exp\\left( (-\\ln(u))^{\\theta} + (-\\ln(v))^{\\theta} \\right)^{\\frac{1}{\\theta}}\n\\]\n\n\nKendall’s tau\nThe Kendall’s tau of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n1 - \\frac{1}{\\theta}\n\\]\n\n\nCoefficient of upper tail dependency\nThe coefficient of upper tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n2 - 2^{\\frac{1}{\\theta}}\n\\]\n\n\nLower tail dependency\nThe coefficient of lower tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\(0\\).\n\n\nSimulation with R\nThe script below creates simulations of the bivariate Gumbel copula with R, using the copula package.\n\n# Install the copula package if you haven't already\ninstall.packages(\"copula\")\n\n# Load the copula package\nlibrary(copula)\n\n# Define the parameter for the Gumbel copula (e.g., theta = 2)\ntheta &lt;- 2\n\n# Create a Gumbel copula object\ngumbel_copula &lt;- gumbelCopula(theta, dim = 2)\n\n# Generate random samples from the Gumbel copula\nn_samples &lt;- 100  # Number of samples\nsamples &lt;- rCopula(n_samples, gumbel_copula)\n\n# Print the first few samples\nhead(samples)"
+    "text": "This page is a short summary about the bivariate Gumbel copula. I did initially as a cheat sheet for myself, I hope it can be useful for you as well 😉.\nThis website was built and published to Github Pages using quarto."
   },
   {
     "objectID": "about.html",
@@ -12,5 +12,47 @@
     "title": "About",
     "section": "",
     "text": "Created by a passionate actuary 😀"
+  },
+  {
+    "objectID": "index.html#definition",
+    "href": "index.html#definition",
+    "title": "The bivariate Gumbel copula",
+    "section": "2 Definition",
+    "text": "2 Definition\nThe bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is defined by, for all \\((u,v)\\in ]0,1]^2\\), \\[\nC_{\\theta}\\left( u, v \\right) = \\exp\\left( - \\left( \\left( -\\ln(u) \\right)^{\\theta} + \\left( -\\ln(v)\\right)^{\\theta} \\right)^{\\frac{1}{\\theta}} \\right)\n\\]"
+  },
+  {
+    "objectID": "index.html#kendalls-tau",
+    "href": "index.html#kendalls-tau",
+    "title": "The bivariate Gumbel copula",
+    "section": "3 Kendall’s tau",
+    "text": "3 Kendall’s tau\nThe Kendall’s tau of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n1 - \\frac{1}{\\theta}\n\\]"
+  },
+  {
+    "objectID": "index.html#coefficient-of-upper-tail-dependency",
+    "href": "index.html#coefficient-of-upper-tail-dependency",
+    "title": "The bivariate Gumbel copula",
+    "section": "4 Coefficient of upper tail dependency",
+    "text": "4 Coefficient of upper tail dependency\nThe coefficient of upper tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n2 - 2^{\\frac{1}{\\theta}}\n\\]"
+  },
+  {
+    "objectID": "index.html#coefficient-of-lower-tail-dependency",
+    "href": "index.html#coefficient-of-lower-tail-dependency",
+    "title": "The bivariate Gumbel copula",
+    "section": "5 Coefficient of lower tail dependency",
+    "text": "5 Coefficient of lower tail dependency\nThe coefficient of lower tail dependency of the bivariate Gumbel copula with parameter \\(\\theta \\ge 1\\) is equal to \\(0\\)."
+  },
+  {
+    "objectID": "index.html#simulation-with-r",
+    "href": "index.html#simulation-with-r",
+    "title": "The bivariate Gumbel copula",
+    "section": "6 Simulation with R",
+    "text": "6 Simulation with R\nThe following script creates simulations of the bivariate Gumbel copula with R using the copula package, and prints the first 10 simulations.\n\n# Install the copula package if you haven't already\n# install.packages(\"copula\")\n# Load the copula package\nlibrary(copula)\n\n# Define the parameter for the Gumbel copula (e.g., theta = 6)\ntheta &lt;- 6\n\n# Create a Gumbel copula object\ngumbel_copula &lt;- gumbelCopula(theta, dim = 2)\n\n# Generate random samples from the Gumbel copula\nn_samples &lt;- 1000  # Number of samples\nset.seed(1) # Set the seed to ensure that the results are reproducible\nsamples &lt;- rCopula(n_samples, gumbel_copula)\n\n# Print the first few samples\nhead(samples, n = 10)\n\n            [,1]        [,2]\n [1,] 0.19898596 0.224083220\n [2,] 0.81121317 0.786621135\n [3,] 0.89816385 0.888828402\n [4,] 0.09080203 0.039999714\n [5,] 0.34837004 0.746533513\n [6,] 0.52643061 0.685182220\n [7,] 0.94393942 0.937099907\n [8,] 0.82127474 0.905473421\n [9,] 0.27723119 0.415820543\n[10,] 0.02030906 0.005701014\n\n\nThe following script plots the simulations with R using the plotly package, which creates interactive graphs.\n\n# Install the plotly package if you haven't already\n# install.packages(\"plotly\")\n# Load the plotly package\nlibrary(\"plotly\")\n\n# Convert the samples matrix to a data frame for plotly\ndf &lt;- as.data.frame(samples)\n\n# Rename the columns for clarity (optional)\ncolnames(df) &lt;- c(\"X\", \"Y\")\n\n# Create a dynamic scatter plot with plotly\nplot_ly(df, x = ~X, y = ~Y, type = 'scatter') %&gt;%\nlayout(title = list(text = \"Bivariate Gumbel copula samples - theta = 6\"),\n  xaxis = list(title = \"X-axis (Column 1)\"),\n  yaxis = list(title = \"Y-axis (Column 2)\")\n)"
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "The bivariate Gumbel copula",
+    "section": "",
+    "text": "This page is a short summary about the bivariate Gumbel copula. I did initially as a cheat sheet for myself, I hope it can be useful for you as well 😉.\nThis website was built and published to Github Pages using quarto."
   }
 ]
