@@ -102,6 +102,55 @@
     "href": "index.html#plan",
     "title": "A crash course on copulas",
     "section": "2 Plan",
-    "text": "2 Plan\n\nEssential theoretical results\nImportant families of copulas\n\nGumbel: here\nClayton\n\nAn example of risk aggregation in actuarial science using copulas\n\nPlease reach out if you spot typos or errors!"
+    "text": "2 Plan\n\nEssential theoretical results\n\nSklar’s theorem\nThe re-ordering algorithm\n\nImportant families of copulas\n\nGumbel: here\nClayton: …\nNested Gumbel: …\n\nAn example of risk aggregation in actuarial science using copulas\n\nPlease reach out if you spot typos or errors!"
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "A crash course on copulas",
+    "section": "3 References",
+    "text": "3 References\nI used the references below to write this course:\n\n…\n…"
+  },
+  {
+    "objectID": "clayton.html",
+    "href": "clayton.html",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "The bivariate Clayton copula with parameter \\(\\theta &gt; 0\\) is defined by, for all \\((u,v)\\in ]0,1]^2\\), \\[\nC_{\\theta}\\left( u, v \\right) = \\left( u^{-\\theta} + v^{-\\theta} - 1  \\right)^{- \\frac{1}{\\theta}}\n\\]"
+  },
+  {
+    "objectID": "clayton.html#definition",
+    "href": "clayton.html#definition",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "The bivariate Clayton copula with parameter \\(\\theta &gt; 0\\) is defined by, for all \\((u,v)\\in ]0,1]^2\\), \\[\nC_{\\theta}\\left( u, v \\right) = \\left( u^{-\\theta} + v^{-\\theta} - 1  \\right)^{- \\frac{1}{\\theta}}\n\\]"
+  },
+  {
+    "objectID": "clayton.html#kendalls-tau",
+    "href": "clayton.html#kendalls-tau",
+    "title": "A crash course on copulas",
+    "section": "2 Kendall’s tau",
+    "text": "2 Kendall’s tau\nThe Kendall’s tau of the bivariate Clayton copula with parameter \\(\\theta &gt; 0\\) is equal to \\[\n\\frac{\\theta}{2 + \\theta}\n\\]"
+  },
+  {
+    "objectID": "clayton.html#coefficient-of-upper-tail-dependency",
+    "href": "clayton.html#coefficient-of-upper-tail-dependency",
+    "title": "A crash course on copulas",
+    "section": "3 Coefficient of upper tail dependency",
+    "text": "3 Coefficient of upper tail dependency\nThe coefficient of upper tail dependency of the bivariate Clayton copula with parameter \\(\\theta &gt; 0\\) is equal to \\(0\\)."
+  },
+  {
+    "objectID": "clayton.html#coefficient-of-lower-tail-dependency",
+    "href": "clayton.html#coefficient-of-lower-tail-dependency",
+    "title": "A crash course on copulas",
+    "section": "4 Coefficient of lower tail dependency",
+    "text": "4 Coefficient of lower tail dependency\nThe coefficient of lower tail dependency of the bivariate Clayton copula with parameter \\(\\theta \\ge 1\\) is equal to \\[\n2^{-\\frac{1}{\\theta}}\n\\]"
+  },
+  {
+    "objectID": "clayton.html#simulation-with-r",
+    "href": "clayton.html#simulation-with-r",
+    "title": "A crash course on copulas",
+    "section": "5 Simulation with R",
+    "text": "5 Simulation with R\nThe following script creates simulations of the bivariate Clayton copula with R using the copula package, and prints the first 10 simulations.\n\n# Install the copula package if you haven't already\n# install.packages(\"copula\")\n# Load the copula package\nlibrary(copula)\n\n# Define the parameter for the Clayton copula (e.g., theta = 2)\ntheta &lt;- 2\n\n# Create a Clayton copula object\nclayton_copula &lt;- claytonCopula(theta, dim = 2)\n\n# Generate random samples from the Clayton copula\nn_samples &lt;- 1000  # Number of samples\nset.seed(1) # Set the seed to ensure that the results are reproducible\nsamples &lt;- rCopula(n_samples, clayton_copula)\n\n# Print the first few samples\nhead(samples, n = 10)\n\n            [,1]      [,2]\n [1,] 0.26550866 0.3439581\n [2,] 0.37212390 0.5704530\n [3,] 0.57285336 0.5179257\n [4,] 0.90820779 0.9816186\n [5,] 0.20168193 0.1129381\n [6,] 0.89838968 0.3083687\n [7,] 0.94467527 0.7790627\n [8,] 0.66079779 0.7056083\n [9,] 0.62911404 0.8727046\n[10,] 0.06178627 0.1074825\n\n\nThe following script plots the simulations with R using the plotly package, which creates interactive graphs.\n\n# Install the plotly package if you haven't already\n# install.packages(\"plotly\")\n# Load the plotly package\nlibrary(\"plotly\")\n\n# Convert the samples matrix to a data frame for plotly\ndf &lt;- as.data.frame(samples)\n\n# Rename the columns for clarity (optional)\ncolnames(df) &lt;- c(\"X\", \"Y\")\n\n# Create a dynamic scatter plot with plotly\nplot_ly(df, x = ~X, y = ~Y, type = 'scatter') %&gt;%\nlayout(title = list(text = \"Bivariate Clayton copula samples - theta = 2\"),\n  xaxis = list(title = \"X-axis (Column 1)\"),\n  yaxis = list(title = \"Y-axis (Column 2)\")\n)"
   }
 ]
