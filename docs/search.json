@@ -102,7 +102,7 @@
     "href": "index.html#plan",
     "title": "A crash course on copulas",
     "section": "2 Plan",
-    "text": "2 Plan\n\nEssential theoretical results\n\nSklar’s theorem: here\nThe re-ordering algorithm\n\nImportant families of copulas\n\nGumbel: here\nClayton: here\nNested Gumbel: …\n\nAn example of risk aggregation in actuarial science using copulas\n\nPlease reach out if you spot typos or errors!"
+    "text": "2 Plan\n\nEssential theoretical results\n\nSklar’s theorem: here\nEstimation: …\nThe rank re-ordering algorithm: here\n\nImportant families of copulas\n\nGaussian: …\nStudent: …\nGumbel: here\nClayton: here\n\n\nPlease reach out if you spot typos or errors!"
   },
   {
     "objectID": "index.html#references",
@@ -156,16 +156,16 @@
   {
     "objectID": "sklar.html",
     "href": "sklar.html",
-    "title": "1 Sklar’s Theorem",
+    "title": "A crash course on copulas",
     "section": "",
-    "text": "1 Sklar’s Theorem\nLet \\(\\mathbf{X} = (X_1, ..., X_n)\\), \\(n \\in \\mathbf{N}^{*}, n \\geq 2\\), be a random vector with values in \\(\\mathbf{R}^n\\), with joint distribution function \\(F_{\\mathbf{X}}\\) and marginal distribution functions \\(F_{X_1}, ..., F_{X_n}\\).\nThen, there exists a copula \\(C\\), i.e., a multivariate cumulative distribution function on the unit cube \\([0, 1]^n\\) with uniform marginals, such that, for all \\((x_1, ..., x_n) \\in \\mathbf{R}^n\\):\n\\[\nF_{\\mathbf{X}}(x_1, ..., x_n) = C(F_{X_1}(x_1), ..., F_{X_n}(x_n)),\n\\]\n\n\n2 Inverse of Sklar’s Theorem\nUsing the same notation as above, if the marginals \\(F_{X_1}, ..., F_{X_n}\\) are continuous, the copula \\(C\\) is unique and can be expressed as, for all \\((u_1, ..., u_n) \\in [0,1]^n\\):\n\\[\nC(u_1, ..., u_n) = F_{\\mathbf{X}}(F_{X_1}^{-1}(u_1), ..., F_{X_n}^{-1}(u_n)).\n\\]\nwhere, for all \\(i \\in \\{1, ..., n\\}\\), \\(F_{X_i}^{-1}\\) is the inverse of the marginal distribution function of \\(X_i\\)."
+    "text": "Let \\(\\mathbf{X} = \\left(X_1, ..., X_n\\right)\\), \\(n \\in \\mathbf{N}^{*}, n \\geq 2\\), be a random vector with values in \\(\\mathbf{R}^n\\), with joint distribution function \\(F_{\\mathbf{X}}\\) and marginal distribution functions \\(F_{X_1}, ..., F_{X_n}\\).\nThen, there exists a copula \\(C\\), i.e., a multivariate cumulative distribution function on the unit cube \\([0, 1]^n\\) with uniform marginals, such that, for all \\((x_1, ..., x_n) \\in \\mathbf{R}^n\\):\n\\[\nF_{\\mathbf{X}}(x_1, ..., x_n) = C(F_{X_1}(x_1), ..., F_{X_n}(x_n)),\n\\]"
   },
   {
     "objectID": "sklar.html#inverse-of-sklars-theorem",
     "href": "sklar.html#inverse-of-sklars-theorem",
-    "title": "1 Sklar’s Theorem",
-    "section": "",
-    "text": "If the marginals \\(F_{X_1}, F_{X_2}, \\dots, F_{X_n}\\) are continuous, the copula \\(C\\) is unique and can be expressed as:\n\\[\nC(u_1, u_2, \\dots, u_n) = F_{\\mathbf{X}}(F_{X_1}^{-1}(u_1), F_{X_2}^{-1}(u_2), \\dots, F_{X_n}^{-1}(u_n)).\n\\]\nHere, \\(F_{X_i}^{-1}\\) is the inverse of the marginal distribution function of \\(X_i\\)."
+    "title": "A crash course on copulas",
+    "section": "2 Inverse of Sklar’s Theorem",
+    "text": "2 Inverse of Sklar’s Theorem\nUsing the same notation as above, if the marginals \\(F_{X_1}, ..., F_{X_n}\\) are continuous, the copula \\(C\\) is unique and can be expressed as, for all \\((u_1, ..., u_n) \\in [0,1]^n\\):\n\\[\nC(u_1, ..., u_n) = F_{\\mathbf{X}}(F_{X_1}^{-1}(u_1), ..., F_{X_n}^{-1}(u_n)).\n\\]\nwhere, for all \\(i \\in \\{1, ..., n\\}\\), \\(F_{X_i}^{-1}\\) is the inverse of the marginal distribution function of \\(X_i\\)."
   },
   {
     "objectID": "sklar.html#key-properties-of-copulas",
@@ -173,5 +173,61 @@
     "title": "1 Sklar’s Theorem",
     "section": "",
     "text": "Invariance to Marginal Distributions: Copulas separate the marginal behavior of random variables from their dependence structure.\nArchimedean Copulas: A popular family of copulas used in applications are Archimedean copulas, which are expressed as: \\[\nC(u_1, u_2, \\dots, u_n) = \\phi^{-1}(\\phi(u_1) + \\phi(u_2) + \\dots + \\phi(u_n)),\n\\] where \\(\\phi\\) is a continuous, strictly decreasing function called a generator."
+  },
+  {
+    "objectID": "rank_reordering.html",
+    "href": "rank_reordering.html",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "We explore how to adjust independent simulations from marginal distributions in order to impose a desired dependence structure using a copula. This is useful when you have simulations from marginal distributions produced independently, but want to introduce a correlation structure between them using a copula chosen separately.\nThis is particularly relevant in the context of internal models for (re-)insurers, where individual risk types are typically modelled separately (by separate teams), and the risk aggregation is performed in a second step.\nWe note:\n\n\\(\\mathbf{X} = \\left( X_1, ..., X_n\\right)\\), \\(n \\in \\mathbf{N}^*\\), \\(n \\geq 2\\), a multivariate real-valued random vector\n\\(F_{X_i}\\) the marginal c.d.f. of \\(X_i\\) for all \\(i \\in \\{ 1, ..., n\\}\\)\n\\(C\\) the copula of \\(\\mathbf{X}\\)\n\nWe assume that we have simulations \\(\\left( x_{1,j}, ..., x_{n,j}\\right), j \\in \\{ 1, ..., S\\}\\), \\(S \\in \\mathbf{N}^*\\) being the number of simulations, generated with the expected marginal distributions \\(F_{X_1}, ..., F_{X_n}\\), but under the assumption that the vector components \\(X_1, ..., X_n\\) are independent.\nWe would like to adjust the simulations, so that the dependency structure between the vector components, i.e., the copula \\(C\\), is properly reflected.\nThe solution involves re-ordering the ranks of the simulations of the marginal distributions based on the ranks of samples from the copula."
+  },
+  {
+    "objectID": "rank_reordering.html#steps",
+    "href": "rank_reordering.html#steps",
+    "title": "A crash course on copulas",
+    "section": "2 Steps",
+    "text": "2 Steps\nThe algorithm works as follows: 1. Step 1: a. Generate \\(S\\) simulations from the copula (i.e., as many simulations as produced for the marginal distributions) b. These copula samples will have uniforma marginals that have the desired dependence structure 2. Step 2: a. For each vector component, i.e., for each \\(i \\in \\{1, ..., n\\}\\), sort the simulations of \\(X_i\\), i.e., the \\(x_{i,j}, j\\in \\{ 1, ..., S\\}\\), and assign ranks to them b. These ranks will be used to reorder the samples according to the dependence structure imposed by the copula 3. Step 3: a. After generating the copula samples, re-order the marginal simulations to match the ranks of the copula samples This step introduces the dependence between the variables while preserving their marginal distributions"
+  },
+  {
+    "objectID": "rank_reordering.html#r-code-example",
+    "href": "rank_reordering.html#r-code-example",
+    "title": "A crash course on copulas",
+    "section": "3 R Code Example",
+    "text": "3 R Code Example\nBelow is an R code snippet that demonstrates this process using independent normal and exponential distributions, with a Gaussian copula to introduce dependence.\n\n# Load required libraries\nlibrary(MASS)   # For mvrnorm\nlibrary(copula) # For copula functions\n\n# Step 1: Generate independent marginals\nset.seed(123)\nn &lt;- 100\nX1 &lt;- rnorm(n, mean = 0, sd = 1)        # Simulate from normal distribution\nX2 &lt;- rexp(n, rate = 1)                 # Simulate from exponential distribution\n\n# Step 2: Simulate from a Gaussian copula with correlation = 0.6\nrho &lt;- 0.6\nsigma &lt;- matrix(c(1, rho, rho, 1), 2, 2)  # Correlation matrix\ncopula_samples &lt;- mvrnorm(n, mu = c(0, 0), Sigma = sigma)\n\n# Convert to uniform samples using the normal CDF\nU1 &lt;- pnorm(copula_samples[, 1])\nU2 &lt;- pnorm(copula_samples[, 2])\n\n# Step 3: Rank the copula samples\nrank_U1 &lt;- rank(U1)\nrank_U2 &lt;- rank(U2)\n\n# Step 4: Sort the independent marginals\nsorted_X1 &lt;- sort(X1)\nsorted_X2 &lt;- sort(X2)\n\n# Step 5: Reorder the marginals according to the copula ranks\nX1_new &lt;- sorted_X1[rank_U1]\nX2_new &lt;- sorted_X2[rank_U2]\n\n# Now X1_new and X2_new have the desired dependence structure from the copula\n# You can inspect the rank correlation between X1_new and X2_new\ncor(X1_new, X2_new, method = \"spearman\")  # Check rank correlation\n\n[1] 0.6105251"
+  },
+  {
+    "objectID": "rank_reordering.html#problem-setup",
+    "href": "rank_reordering.html#problem-setup",
+    "title": "A crash course on copulas",
+    "section": "1 Problem Setup",
+    "text": "1 Problem Setup\n\nIndependent simulations: You have independent simulations from the marginal distributions of \\(X_1, X_2, \\dots, X_n\\)\nRequired dependency structure: You want to introduce a dependency structure between the marginals via a given copula.\n\nThe solution involves re-ordering the ranks of the simulations of the marginal distributions based on the ranks of samples from the copula."
+  },
+  {
+    "objectID": "sklar.html#sklars-theorem",
+    "href": "sklar.html#sklars-theorem",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "Let \\(\\mathbf{X} = \\left(X_1, ..., X_n\\right)\\), \\(n \\in \\mathbf{N}^{*}, n \\geq 2\\), be a random vector with values in \\(\\mathbf{R}^n\\), with joint distribution function \\(F_{\\mathbf{X}}\\) and marginal distribution functions \\(F_{X_1}, ..., F_{X_n}\\).\nThen, there exists a copula \\(C\\), i.e., a multivariate cumulative distribution function on the unit cube \\([0, 1]^n\\) with uniform marginals, such that, for all \\((x_1, ..., x_n) \\in \\mathbf{R}^n\\):\n\\[\nF_{\\mathbf{X}}(x_1, ..., x_n) = C(F_{X_1}(x_1), ..., F_{X_n}(x_n)),\n\\]"
+  },
+  {
+    "objectID": "rank_reordering.html#introduction",
+    "href": "rank_reordering.html#introduction",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "We explore how to adjust independent simulations from marginal distributions in order to impose a desired dependence structure using a copula. This is useful when you have simulations from marginal distributions produced independently, but want to introduce a correlation structure between them using a copula chosen separately.\nThis is particularly relevant in the context of internal models for (re-)insurers, where individual risk types are typically modelled separately (by separate teams), and the risk aggregation is performed in a second step.\nWe note:\n\n\\(\\mathbf{X} = \\left( X_1, ..., X_n\\right)\\), \\(n \\in \\mathbf{N}^*\\), \\(n \\geq 2\\), a multivariate real-valued random vector\n\\(F_{X_i}\\) the marginal c.d.f. of \\(X_i\\) for all \\(i \\in \\{ 1, ..., n\\}\\)\n\\(C\\) the copula of \\(\\mathbf{X}\\)\n\nWe assume that we have simulations \\(\\left( x_{1,j}, ..., x_{n,j}\\right), j \\in \\{ 1, ..., S\\}\\), \\(S \\in \\mathbf{N}^*\\) being the number of simulations, generated with the expected marginal distributions \\(F_{X_1}, ..., F_{X_n}\\), but under the assumption that the vector components \\(X_1, ..., X_n\\) are independent.\nWe would like to adjust the simulations, so that the dependency structure between the vector components, i.e., the copula \\(C\\), is properly reflected.\nThe solution involves re-ordering the ranks of the simulations of the marginal distributions based on the ranks of samples from the copula."
+  },
+  {
+    "objectID": "rank_reordering.html#algorithm",
+    "href": "rank_reordering.html#algorithm",
+    "title": "A crash course on copulas",
+    "section": "2 Algorithm",
+    "text": "2 Algorithm\nThe rank-reordering algorithm works as follows:\n\nStep 1:\n\nGenerate \\(S\\) simulations from the copula (i.e., as many simulations as produced for the marginal distributions)\nThese copula samples have uniform marginals with the desired dependency structure\n\nStep 2:\n\nFor each vector component, i.e., for each \\(i \\in \\{1, ..., n\\}\\), sort the simulations of \\(X_i\\) (i.e., the \\(x_{i,j}, j\\in \\{ 1, ..., S\\}\\)) and assign ranks to them\nThese ranks will be used to reorder the samples according to the dependence structure imposed by the copula\n\nStep 3:\n\nAfter generating the copula samples, re-order the marginal simulations to match the ranks of the copula samples\nThis step introduces the dependence between the variables while preserving their marginal distributions"
+  },
+  {
+    "objectID": "rank_reordering.html#r-examples",
+    "href": "rank_reordering.html#r-examples",
+    "title": "A crash course on copulas",
+    "section": "3 R examples",
+    "text": "3 R examples\n\n3.1 Gaussian copula\nBelow is an R code example that implements this algorithm using independent normal and exponential marginal distributions, with a Gaussian copula to introduce dependence.\n\n# Load required libraries\nlibrary(MASS) # For the \"mvrnorm\" function\nlibrary(copula) # For copula functions\n\n# Step 1: Generate independent marginals\n# In a real-world context (e.g., as an actuary working on risk aggregation in an insurance company), the independent marginals are provided as inputs directly\nset.seed(1)\nn &lt;- 1000\n# Simulate from normal distribution\nX1 &lt;- rnorm(n, mean = 0, sd = 1)\n# Simulate from exponential distribution\nX2 &lt;- rexp(n, rate = 1)\n\n# Step 2: Simulate from a Gaussian copula with correlation = 0.6 (for example)\nrho &lt;- 0.6\n# Correlation matrix\nsigma &lt;- matrix(c(1, rho, rho, 1), 2, 2)  \ncopula_samples &lt;- mvrnorm(n, mu = c(0, 0), Sigma = sigma)\n\n# Convert to uniform samples using the standard Gaussian c.d.f.\nU1 &lt;- pnorm(copula_samples[, 1])\nU2 &lt;- pnorm(copula_samples[, 2])\n\n# Step 3: Rank the copula samples\nrank_U1 &lt;- rank(U1)\nrank_U2 &lt;- rank(U2)\n\n# Step 4: Sort the independent marginals\nsorted_X1 &lt;- sort(X1)\nsorted_X2 &lt;- sort(X2)\n\n# Step 5: Re-order the marginals according to the copula ranks\nX1_new &lt;- sorted_X1[rank_U1]\nX2_new &lt;- sorted_X2[rank_U2]\n\n# Now, X1_new and X2_new have the desired dependence structure from the copula\n# You can inspect the rank correlation between X1_new and X2_new:\n# empirical value: \ncor(X1_new, X2_new, method = \"spearman\")\n\n[1] 0.6023343\n\n# theoretical value:\nrho\n\n[1] 0.6\n\n\n\n\n3.2 Gumbel copula\nBelow is an R code example using independent gamma and student marginal distributions, with a Gumbel copula to introduce dependence.\n\n# Load required libraries\nlibrary(copula)\n\n# Step 1: Generate independent marginals\nset.seed(1)\nn &lt;- 1000\n# Shape parameter for Gamma distribution\nshape &lt;- 2\n# Rate parameter for Gamma distribution\nrate &lt;- 1\n# Degrees of freedom for Student's t-distribution\ndf &lt;- 5\n\n# Simulate from the Gamma distribution\nX1 &lt;- rgamma(n, shape = shape, rate = rate)\n# Simulate from the Student's t-distribution\nX2 &lt;- rt(n, df = df)\n\n# Step 2: Simulate from a Gumbel copula with theta = 4\ntheta &lt;- 4\ngumbel_copula &lt;- gumbelCopula(param = theta)\ncopula_samples &lt;- rCopula(n, gumbel_copula)\n\n# Convert to uniform samples (copula samples are already in uniform scale)\nU1 &lt;- copula_samples[, 1]\nU2 &lt;- copula_samples[, 2]\n\n# Step 3: Rank the copula samples\nrank_U1 &lt;- rank(U1)\nrank_U2 &lt;- rank(U2)\n\n# Step 4: Sort the independent marginals\nsorted_X1 &lt;- sort(X1)\nsorted_X2 &lt;- sort(X2)\n\n# Step 5: Reorder the marginals according to the copula ranks\nX1_new &lt;- sorted_X1[rank_U1]\nX2_new &lt;- sorted_X2[rank_U2]\n\n# Now X1_new and X2_new have the desired dependence structure from the copula\n# You can inspect the Kendall's tau between the new variables\n# empirical value: \ncor(X1_new, X2_new, method = \"kendall\")\n\n[1] 0.7427948\n\n# theoretical value (cf. section on the Gumbel copula):\n1 - 1/theta\n\n[1] 0.75"
   }
 ]

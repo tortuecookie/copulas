@@ -92,6 +92,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Sklar’s theorem</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./rank_reordering.html" rel="" target="">
+ <span class="menu-text">Rank re-ordering</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./gumbel.html" rel="" target="">
  <span class="menu-text">The Gumbel copula</span></a>
   </li>  
@@ -129,16 +133,16 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="sklars-theorem" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Sklar’s Theorem</h1>
-<p>Let <span class="math inline">\(\mathbf{X} = (X_1, ..., X_n)\)</span>, <span class="math inline">\(n \in \mathbf{N}^{*}, n \geq 2\)</span>, be a random vector with values in <span class="math inline">\(\mathbf{R}^n\)</span>, with joint distribution function <span class="math inline">\(F_{\mathbf{X}}\)</span> and marginal distribution functions <span class="math inline">\(F_{X_1}, ..., F_{X_n}\)</span>.</p>
+<section id="sklars-theorem" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sklars-theorem"><span class="header-section-number">1</span> Sklar’s Theorem</h2>
+<p>Let <span class="math inline">\(\mathbf{X} = \left(X_1, ..., X_n\right)\)</span>, <span class="math inline">\(n \in \mathbf{N}^{*}, n \geq 2\)</span>, be a random vector with values in <span class="math inline">\(\mathbf{R}^n\)</span>, with joint distribution function <span class="math inline">\(F_{\mathbf{X}}\)</span> and marginal distribution functions <span class="math inline">\(F_{X_1}, ..., F_{X_n}\)</span>.</p>
 <p>Then, there exists a copula <span class="math inline">\(C\)</span>, i.e., a multivariate cumulative distribution function on the unit cube <span class="math inline">\([0, 1]^n\)</span> with uniform marginals, such that, for all <span class="math inline">\((x_1, ..., x_n) \in \mathbf{R}^n\)</span>:</p>
 <p><span class="math display">\[
 F_{\mathbf{X}}(x_1, ..., x_n) = C(F_{X_1}(x_1), ..., F_{X_n}(x_n)),
 \]</span></p>
 </section>
-<section id="inverse-of-sklars-theorem" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Inverse of Sklar’s Theorem</h1>
+<section id="inverse-of-sklars-theorem" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="inverse-of-sklars-theorem"><span class="header-section-number">2</span> Inverse of Sklar’s Theorem</h2>
 <p>Using the same notation as above, if the marginals <span class="math inline">\(F_{X_1}, ..., F_{X_n}\)</span> are continuous, the copula <span class="math inline">\(C\)</span> is unique and can be expressed as, for all <span class="math inline">\((u_1, ..., u_n) \in [0,1]^n\)</span>:</p>
 <p><span class="math display">\[
 C(u_1, ..., u_n) = F_{\mathbf{X}}(F_{X_1}^{-1}(u_1), ..., F_{X_n}^{-1}(u_n)).
