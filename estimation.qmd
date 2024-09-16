@@ -1,0 +1,124 @@
+---
+from: markdown+emoji
+---
+
+[*draft*]
+
+## Introduction
+
+There are three widely used methods for estimating copula parameters:
+
+1. Maximum Likelihood Estimation (MLE)
+2. Inference Functions for Margins (IFM)
+3. Canonical Maximum Likelihood (CML)
+
+Let's go through each method with corresponding R code.
+
+## Example dataset
+
+We simulate bivariate normal data that we will use for estimating copula parameters.
+
+```{r}
+# Load necessary packages
+library(copula)
+library(MASS) # for the "mvrnorm" function
+
+# Simulate bivariate normal data
+set.seed(1)
+rho_true <- 0.6
+data <- mvrnorm(1000, mu = c(0, 0), Sigma = matrix(c(1, rho_true, rho_true, 1), 2))
+
+# Transform data to uniform margins (using empirical CDF)
+u1 <- pnorm(data[, 1])
+u2 <- pnorm(data[, 2])
+```
+
+We have generated a sample of 1000 bivariate normal random variables with a true correlation of 
+$\rho = 0.6$. The `pnorm` function is used to transform the data into uniform margins using the empirical CDF, which is required for fitting copulas.
+
+## Maximum Likelihood Estimation (MLE)
+
+The Maximum Likelihood Estimation (MLE) method involves maximizing the likelihood function of the copula model given the data. The log-likelihood function for a copula with parameter $\theta$ is given by
+$$
+\mathcal{L}(\theta) = \sum_{i=1}^{N} \log \left( c(u_{i,1}, ..., u_{i,n}; \theta) \right)
+$$
+
+where $c$ is the copula density function, and the $u_{i,j}$ are the uniform marginal transformations of the original data.
+
+Here’s how you can use the `fitCopula` function to estimate copula parameters using MLE:
+
+```{r}
+# Define Gaussian copula
+gaussian_cop <- normalCopula(dim = 2)
+
+# Use MLE to estimate copula parameter
+fit_mle <- fitCopula(gaussian_cop, cbind(u1, u2), method = "ml")
+fit_mle@estimate
+```
+The MLE method directly estimates the copula parameter $\rho$ which describes the dependency structure between the variables.
+
+## Inference Functions for Margins (IFM)
+
+The Inference Functions for Margins (IFM) method is a two-step process:
+
+1. Step 1: Estimate the parameters of the marginal distributions (e.g., fitting each marginal distribution separately).
+2. Step 2: Use these fitted marginals to transform the data to uniform margins, and then estimate the copula parameter via MLE.
+
+This method is useful when the marginal distributions are known or when they can be assumed to follow a particular parametric distribution.
+
+In the example below, we assume the marginals are normally distributed and use the MLE method on the transformed data.
+
+```{r}
+#| warning: false
+
+# Fit marginal distributions (assuming normal distribution)
+library(fitdistrplus)
+
+fit_marg1 <- fitdistr(data[, 1], "normal")
+fit_marg2 <- fitdistr(data[, 2], "normal")
+
+# Extract fitted parameters
+mu1 <- fit_marg1$estimate["mean"]
+sigma1 <- fit_marg1$estimate["sd"]
+mu2 <- fit_marg2$estimate["mean"]
+sigma2 <- fit_marg2$estimate["sd"]
+
+# Transform data using estimated marginal parameters
+u1_ifm <- pnorm(data[, 1], mean = mu1, sd = sigma1)
+u2_ifm <- pnorm(data[, 2], mean = mu2, sd = sigma2)
+
+# Fit copula using MLE on the transformed data
+fit_ifm <- fitCopula(gaussian_cop, cbind(u1_ifm, u2_ifm), method = "ml")
+fit_ifm@estimate
+```
+
+In IFM, the parameters of the marginal distributions are first estimated, and the data is transformed using these fitted marginals before estimating the copula parameters.
+
+## Canonical Maximum Likelihood (CML)
+
+Canonical Maximum Likelihood (CML) also uses MLE for the copula parameters, but instead of parametric marginal estimation, it uses non-parametric empirical CDFs to transform the data. This approach is more flexible since it does not require parametric assumptions for the marginal distributions.
+
+Here we use the empirical CDF (rank transformation) for the marginals, followed by MLE for copula parameter estimation:
+```{r}
+# Compute empirical CDF for marginals
+u1_cml <- rank(data[, 1]) / (nrow(data) + 1)
+u2_cml <- rank(data[, 2]) / (nrow(data) + 1)
+
+# Fit copula using MLE with empirical margins
+fit_cml <- fitCopula(gaussian_cop, cbind(u1_cml, u2_cml), method = "ml")
+fit_cml@estimate
+```
+
+CML is more flexible than IFM because it makes no assumptions about the marginal distributions. Instead, it uses the ranks of the data to estimate the uniform marginals.
+
+## Comparison of methods
+
+Each of the three methods — MLE, IFM, and CML — can yield different copula parameter estimates based on their assumptions about the marginals.
+
+In our R examples above, the results for the 3 methods are as follows:
+
+```{r}
+cat("MLE Estimate for Copula Parameter:", fit_mle@estimate, "\n")
+cat("IFM Estimate for Copula Parameter:", fit_ifm@estimate, "\n")
+cat("CML Estimate for Copula Parameter:", fit_cml@estimate, "\n")
+```

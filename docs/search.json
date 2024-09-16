@@ -229,5 +229,68 @@
     "title": "A crash course on copulas",
     "section": "3 R examples",
     "text": "3 R examples\n\n3.1 Gaussian copula\nBelow is an R code example that implements this algorithm using independent normal and exponential marginal distributions, with a Gaussian copula to introduce dependence.\n\n# Load required libraries\nlibrary(MASS) # For the \"mvrnorm\" function\nlibrary(copula) # For copula functions\n\n# Step 1: Generate independent marginals\n# In a real-world context (e.g., as an actuary working on risk aggregation in an insurance company), the independent marginals are provided as inputs directly\nset.seed(1)\nn &lt;- 1000\n# Simulate from normal distribution\nX1 &lt;- rnorm(n, mean = 0, sd = 1)\n# Simulate from exponential distribution\nX2 &lt;- rexp(n, rate = 1)\n\n# Step 2: Simulate from a Gaussian copula with correlation = 0.6 (for example)\nrho &lt;- 0.6\n# Correlation matrix\nsigma &lt;- matrix(c(1, rho, rho, 1), 2, 2)  \ncopula_samples &lt;- mvrnorm(n, mu = c(0, 0), Sigma = sigma)\n\n# Convert to uniform samples using the standard Gaussian c.d.f.\nU1 &lt;- pnorm(copula_samples[, 1])\nU2 &lt;- pnorm(copula_samples[, 2])\n\n# Step 3: Rank the copula samples\nrank_U1 &lt;- rank(U1)\nrank_U2 &lt;- rank(U2)\n\n# Step 4: Sort the independent marginals\nsorted_X1 &lt;- sort(X1)\nsorted_X2 &lt;- sort(X2)\n\n# Step 5: Re-order the marginals according to the copula ranks\nX1_new &lt;- sorted_X1[rank_U1]\nX2_new &lt;- sorted_X2[rank_U2]\n\n# Now, X1_new and X2_new have the desired dependence structure from the copula\n# You can inspect the rank correlation between X1_new and X2_new:\n# empirical value: \ncor(X1_new, X2_new, method = \"spearman\")\n\n[1] 0.6023343\n\n# theoretical value:\nrho\n\n[1] 0.6\n\n\n\n\n3.2 Gumbel copula\nBelow is an R code example using independent gamma and student marginal distributions, with a Gumbel copula to introduce dependence.\n\n# Load required libraries\nlibrary(copula)\n\n# Step 1: Generate independent marginals\nset.seed(1)\nn &lt;- 1000\n# Shape parameter for Gamma distribution\nshape &lt;- 2\n# Rate parameter for Gamma distribution\nrate &lt;- 1\n# Degrees of freedom for Student's t-distribution\ndf &lt;- 5\n\n# Simulate from the Gamma distribution\nX1 &lt;- rgamma(n, shape = shape, rate = rate)\n# Simulate from the Student's t-distribution\nX2 &lt;- rt(n, df = df)\n\n# Step 2: Simulate from a Gumbel copula with theta = 4\ntheta &lt;- 4\ngumbel_copula &lt;- gumbelCopula(param = theta)\ncopula_samples &lt;- rCopula(n, gumbel_copula)\n\n# Convert to uniform samples (copula samples are already in uniform scale)\nU1 &lt;- copula_samples[, 1]\nU2 &lt;- copula_samples[, 2]\n\n# Step 3: Rank the copula samples\nrank_U1 &lt;- rank(U1)\nrank_U2 &lt;- rank(U2)\n\n# Step 4: Sort the independent marginals\nsorted_X1 &lt;- sort(X1)\nsorted_X2 &lt;- sort(X2)\n\n# Step 5: Reorder the marginals according to the copula ranks\nX1_new &lt;- sorted_X1[rank_U1]\nX2_new &lt;- sorted_X2[rank_U2]\n\n# Now X1_new and X2_new have the desired dependence structure from the copula\n# You can inspect the Kendall's tau between the new variables\n# empirical value: \ncor(X1_new, X2_new, method = \"kendall\")\n\n[1] 0.7427948\n\n# theoretical value (cf. section on the Gumbel copula):\n1 - 1/theta\n\n[1] 0.75"
+  },
+  {
+    "objectID": "estimation.html",
+    "href": "estimation.html",
+    "title": "A crash course on copulas",
+    "section": "",
+    "text": "[draft]"
+  },
+  {
+    "objectID": "estimation.html#introduction",
+    "href": "estimation.html#introduction",
+    "title": "A crash course on copulas",
+    "section": "1 Introduction",
+    "text": "1 Introduction\nThere are three widely used methods for estimating copula parameters:\n\nMaximum Likelihood Estimation (MLE)\nInference Functions for Margins (IFM)\nCanonical Maximum Likelihood (CML)\n\nLet’s go through each method with corresponding R code."
+  },
+  {
+    "objectID": "estimation.html#simulate-data-from-a-bivariate-normal-distribution",
+    "href": "estimation.html#simulate-data-from-a-bivariate-normal-distribution",
+    "title": "A crash course on copulas",
+    "section": "2 Simulate Data from a Bivariate Normal Distribution",
+    "text": "2 Simulate Data from a Bivariate Normal Distribution\nFirst, we simulate bivariate normal data that we will use for estimating copula parameters.\n\n# Load necessary packages\nlibrary(copula)\nlibrary(MASS) # for the \"mvrnorm\" function\n\n# Simulate bivariate normal data\nset.seed(1)\nrho_true &lt;- 0.6\ndata &lt;- mvrnorm(1000, mu = c(0, 0), Sigma = matrix(c(1, rho_true, rho_true, 1), 2))\n\n# Transform data to uniform margins (using empirical CDF)\nu1 &lt;- pnorm(data[, 1])\nu2 &lt;- pnorm(data[, 2])\n\nWe have generated a sample of 1000 bivariate normal random variables with a true correlation of \\(\\rho = 0.6\\). The pnorm function is used to transform the data into uniform margins using the empirical CDF, which is required for fitting copulas."
+  },
+  {
+    "objectID": "estimation.html#maximum-likelihood-estimation-mle",
+    "href": "estimation.html#maximum-likelihood-estimation-mle",
+    "title": "A crash course on copulas",
+    "section": "3 Maximum Likelihood Estimation (MLE)",
+    "text": "3 Maximum Likelihood Estimation (MLE)\nThe Maximum Likelihood Estimation (MLE) method involves maximizing the likelihood function of the copula model given the data. The log-likelihood function for a copula with parameter \\(\\theta\\) is given by \\[\n\\mathcal{L}(\\theta) = \\sum_{i=1}^{N} \\log \\left( c(u_{i,1}, ..., u_{i,n}; \\theta) \\right)\n\\]\nwhere \\(c\\) is the copula density function, and the \\(u_{i,j}\\) are the uniform marginal transformations of the original data.\nHere’s how you can use the fitCopula function to estimate copula parameters using MLE:\n\n# Define Gaussian copula\ngaussian_cop &lt;- normalCopula(dim = 2)\n\n# Use MLE to estimate copula parameter\nfit_mle &lt;- fitCopula(gaussian_cop, cbind(u1, u2), method = \"ml\")\nfit_mle@estimate\n\n[1] 0.5773778\n\n\nThe MLE method directly estimates the copula parameter \\(\\rho\\) which describes the dependency structure between the variables."
+  },
+  {
+    "objectID": "estimation.html#create-an-example-dataset",
+    "href": "estimation.html#create-an-example-dataset",
+    "title": "A crash course on copulas",
+    "section": "2 Create an example dataset",
+    "text": "2 Create an example dataset\nFirst, we simulate bivariate normal data that we will use for estimating copula parameters.\n\n# Load necessary packages\nlibrary(copula)\nlibrary(MASS) # for the \"mvrnorm\" function\n\n# Simulate bivariate normal data\nset.seed(1)\nrho_true &lt;- 0.6\ndata &lt;- mvrnorm(1000, mu = c(0, 0), Sigma = matrix(c(1, rho_true, rho_true, 1), 2))\n\n# Transform data to uniform margins (using empirical CDF)\nu1 &lt;- pnorm(data[, 1])\nu2 &lt;- pnorm(data[, 2])\n\nWe have generated a sample of 1000 bivariate normal random variables with a true correlation of \\(\\rho = 0.6\\). The pnorm function is used to transform the data into uniform margins using the empirical CDF, which is required for fitting copulas."
+  },
+  {
+    "objectID": "estimation.html#inference-functions-for-margins-ifm",
+    "href": "estimation.html#inference-functions-for-margins-ifm",
+    "title": "A crash course on copulas",
+    "section": "4 Inference Functions for Margins (IFM)",
+    "text": "4 Inference Functions for Margins (IFM)\nThe Inference Functions for Margins (IFM) method is a two-step process:\n\nStep 1: Estimate the parameters of the marginal distributions (e.g., fitting each marginal distribution separately).\nStep 2: Use these fitted marginals to transform the data to uniform margins, and then estimate the copula parameter via MLE.\n\nThis method is useful when the marginal distributions are known or when they can be assumed to follow a particular parametric distribution.\nIn the example below, we assume the marginals are normally distributed and use the MLE method on the transformed data.\n\n# Fit marginal distributions (assuming normal distribution)\nlibrary(fitdistrplus)\n\nfit_marg1 &lt;- fitdistr(data[, 1], \"normal\")\nfit_marg2 &lt;- fitdistr(data[, 2], \"normal\")\n\n# Extract fitted parameters\nmu1 &lt;- fit_marg1$estimate[\"mean\"]\nsigma1 &lt;- fit_marg1$estimate[\"sd\"]\nmu2 &lt;- fit_marg2$estimate[\"mean\"]\nsigma2 &lt;- fit_marg2$estimate[\"sd\"]\n\n# Transform data using estimated marginal parameters\nu1_ifm &lt;- pnorm(data[, 1], mean = mu1, sd = sigma1)\nu2_ifm &lt;- pnorm(data[, 2], mean = mu2, sd = sigma2)\n\n# Fit copula using MLE on the transformed data\nfit_ifm &lt;- fitCopula(gaussian_cop, cbind(u1_ifm, u2_ifm), method = \"ml\")\nfit_ifm@estimate\n\n[1] 0.5968722\n\n\nIn IFM, the parameters of the marginal distributions are first estimated, and the data is transformed using these fitted marginals before estimating the copula parameters."
+  },
+  {
+    "objectID": "estimation.html#canonical-maximum-likelihood-cml",
+    "href": "estimation.html#canonical-maximum-likelihood-cml",
+    "title": "A crash course on copulas",
+    "section": "5 Canonical Maximum Likelihood (CML)",
+    "text": "5 Canonical Maximum Likelihood (CML)\nCanonical Maximum Likelihood (CML) also uses MLE for the copula parameters, but instead of parametric marginal estimation, it uses non-parametric empirical CDFs to transform the data. This approach is more flexible since it does not require parametric assumptions for the marginal distributions.\nHere we use the empirical CDF (rank transformation) for the marginals, followed by MLE for copula parameter estimation:\n\n# Compute empirical CDF for marginals\nu1_cml &lt;- rank(data[, 1]) / (nrow(data) + 1)\nu2_cml &lt;- rank(data[, 2]) / (nrow(data) + 1)\n\n# Fit copula using MLE with empirical margins\nfit_cml &lt;- fitCopula(gaussian_cop, cbind(u1_cml, u2_cml), method = \"ml\")\nfit_cml@estimate\n\n[1] 0.6008854\n\n\nCML is more flexible than IFM because it makes no assumptions about the marginal distributions. Instead, it uses the ranks of the data to estimate the uniform marginals."
+  },
+  {
+    "objectID": "estimation.html#comparison-of-methods",
+    "href": "estimation.html#comparison-of-methods",
+    "title": "A crash course on copulas",
+    "section": "6 Comparison of methods",
+    "text": "6 Comparison of methods\nEach of the three methods — MLE, IFM, and CML — can yield different copula parameter estimates based on their assumptions about the marginals.\nIn our R examples above, the results for the 3 methods are as follows:\n\ncat(\"MLE Estimate for Copula Parameter:\", fit_mle@estimate, \"\\n\")\n\nMLE Estimate for Copula Parameter: 0.5773778 \n\ncat(\"IFM Estimate for Copula Parameter:\", fit_ifm@estimate, \"\\n\")\n\nIFM Estimate for Copula Parameter: 0.5968722 \n\ncat(\"CML Estimate for Copula Parameter:\", fit_cml@estimate, \"\\n\")\n\nCML Estimate for Copula Parameter: 0.6008854"
+  },
+  {
+    "objectID": "estimation.html#example-dataset",
+    "href": "estimation.html#example-dataset",
+    "title": "A crash course on copulas",
+    "section": "2 Example dataset",
+    "text": "2 Example dataset\nWe simulate bivariate normal data that we will use for estimating copula parameters.\n\n# Load necessary packages\nlibrary(copula)\nlibrary(MASS) # for the \"mvrnorm\" function\n\n# Simulate bivariate normal data\nset.seed(1)\nrho_true &lt;- 0.6\ndata &lt;- mvrnorm(1000, mu = c(0, 0), Sigma = matrix(c(1, rho_true, rho_true, 1), 2))\n\n# Transform data to uniform margins (using empirical CDF)\nu1 &lt;- pnorm(data[, 1])\nu2 &lt;- pnorm(data[, 2])\n\nWe have generated a sample of 1000 bivariate normal random variables with a true correlation of \\(\\rho = 0.6\\). The pnorm function is used to transform the data into uniform margins using the empirical CDF, which is required for fitting copulas."
   }
 ]
