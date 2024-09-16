@@ -1,0 +1,23 @@
+---
+from: markdown+emoji
+---
+
+## Sklar's Theorem
+
+Let $\mathbf{X} = \left(X_1, ..., X_n\right)$, $n \in \mathbf{N}^{*}, n \geq 2$, be a random vector with values in $\mathbf{R}^n$, with joint distribution function $F_{\mathbf{X}}$ and marginal distribution functions $F_{X_1}, ..., F_{X_n}$. 
+
+Then, there exists a copula $C$, i.e., a multivariate cumulative distribution function on the unit cube $[0, 1]^n$ with uniform marginals, such that, for all $(x_1, ..., x_n) \in \mathbf{R}^n$:
+
+$$
+F_{\mathbf{X}}(x_1, ..., x_n) = C(F_{X_1}(x_1), ..., F_{X_n}(x_n)),
+$$
+
+## Inverse of Sklar's Theorem
+
+Using the same notation as above, if the marginals $F_{X_1}, ..., F_{X_n}$ are continuous, the copula $C$ is unique and can be expressed as, for all $(u_1, ..., u_n) \in [0,1]^n$:
+
+$$
+C(u_1, ..., u_n) = F_{\mathbf{X}}(F_{X_1}^{-1}(u_1), ..., F_{X_n}^{-1}(u_n)).
+$$
+
+where, for all $i \in \{1, ..., n\}$, $F_{X_i}^{-1}$ is the inverse of the marginal distribution function of $X_i$.

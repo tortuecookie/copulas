@@ -1,0 +1,6 @@
+---
+title: "About"
+from: markdown+emoji
+---
+
+Created by a passionate actuary :grinning:!

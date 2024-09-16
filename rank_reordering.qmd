@@ -1,0 +1,138 @@
+---
+from: markdown+emoji
+---
+
+## Introduction
+
+We explore how to adjust independent simulations from marginal distributions in order to impose a desired dependence structure using a copula. This is useful when you have simulations from marginal distributions produced independently, but want to introduce a correlation structure between them using a copula chosen separately.
+
+This is particularly relevant in the context of internal models for (re-)insurers, where individual risk types are typically modelled separately (by separate teams), and the risk aggregation is performed in a second step.
+
+We note:
+
+1. $\mathbf{X} = \left( X_1, ..., X_n\right)$, $n \in \mathbf{N}^*$, $n \geq 2$, a multivariate real-valued random vector
+2. $F_{X_i}$ the marginal c.d.f. of $X_i$ for all $i \in \{ 1, ..., n\}$
+3. $C$ the copula of $\mathbf{X}$
+
+We assume that we have simulations $\left( x_{1,j}, ..., x_{n,j}\right), j \in \{ 1, ..., S\}$, $S \in \mathbf{N}^*$ being the number of simulations, generated with the expected marginal distributions $F_{X_1}, ..., F_{X_n}$, but **under the assumption that the vector components $X_1, ..., X_n$ are independent**.
+
+We would like to adjust the simulations, so that the dependency structure between the vector components, i.e., the copula $C$, is properly reflected.
+
+The solution involves **re-ordering the ranks** of the simulations of the marginal distributions based on the ranks of samples from the copula.
+
+## Algorithm
+
+The rank-reordering algorithm works as follows:
+
+1. Step 1: 
+    a. Generate $S$ simulations from the copula (i.e., as many simulations as produced for the marginal distributions)
+    b. These copula samples have uniform marginals with the desired dependency structure
+2. Step 2: 
+    a. For each vector component, i.e., for each $i \in \{1, ..., n\}$, sort the simulations of $X_i$ (i.e., the $x_{i,j}, j\in \{ 1, ..., S\}$) and assign ranks to them
+    b. These ranks will be used to reorder the samples according to the dependence structure imposed by the copula
+3. Step 3:
+    a. After generating the copula samples, re-order the marginal simulations to match the ranks of the copula samples
+    b. This step introduces the dependence between the variables while preserving their marginal distributions
+
+## R examples
+
+### Gaussian copula
+
+Below is an R code example that implements this algorithm using independent normal and exponential marginal distributions, with a Gaussian copula to introduce dependence.
+
+```{r}
+# Load required libraries
+library(MASS) # For the "mvrnorm" function
+library(copula) # For copula functions
+
+# Step 1: Generate independent marginals
+# In a real-world context (e.g., as an actuary working on risk aggregation in an insurance company), the independent marginals are provided as inputs directly
+set.seed(1)
+n <- 1000
+# Simulate from normal distribution
+X1 <- rnorm(n, mean = 0, sd = 1)
+# Simulate from exponential distribution
+X2 <- rexp(n, rate = 1)
+
+# Step 2: Simulate from a Gaussian copula with correlation = 0.6 (for example)
+rho <- 0.6
+# Correlation matrix
+sigma <- matrix(c(1, rho, rho, 1), 2, 2)  
+copula_samples <- mvrnorm(n, mu = c(0, 0), Sigma = sigma)
+
+# Convert to uniform samples using the standard Gaussian c.d.f.
+U1 <- pnorm(copula_samples[, 1])
+U2 <- pnorm(copula_samples[, 2])
+
+# Step 3: Rank the copula samples
+rank_U1 <- rank(U1)
+rank_U2 <- rank(U2)
+
+# Step 4: Sort the independent marginals
+sorted_X1 <- sort(X1)
+sorted_X2 <- sort(X2)
+
+# Step 5: Re-order the marginals according to the copula ranks
+X1_new <- sorted_X1[rank_U1]
+X2_new <- sorted_X2[rank_U2]
+
+# Now, X1_new and X2_new have the desired dependence structure from the copula
+# You can inspect the rank correlation between X1_new and X2_new:
+# empirical value: 
+cor(X1_new, X2_new, method = "spearman")
+# theoretical value:
+rho
+```
+
+### Gumbel copula
+
+Below is an R code example using independent gamma and student marginal distributions, with a Gumbel copula to introduce dependence.
+
+```{r}
+# Load required libraries
+library(copula)
+
+# Step 1: Generate independent marginals
+set.seed(1)
+n <- 1000
+# Shape parameter for Gamma distribution
+shape <- 2
+# Rate parameter for Gamma distribution
+rate <- 1
+# Degrees of freedom for Student's t-distribution
+df <- 5
+
+# Simulate from the Gamma distribution
+X1 <- rgamma(n, shape = shape, rate = rate)
+# Simulate from the Student's t-distribution
+X2 <- rt(n, df = df)
+
+# Step 2: Simulate from a Gumbel copula with theta = 4
+theta <- 4
+gumbel_copula <- gumbelCopula(param = theta)
+copula_samples <- rCopula(n, gumbel_copula)
+
+# Convert to uniform samples (copula samples are already in uniform scale)
+U1 <- copula_samples[, 1]
+U2 <- copula_samples[, 2]
+
+# Step 3: Rank the copula samples
+rank_U1 <- rank(U1)
+rank_U2 <- rank(U2)
+
+# Step 4: Sort the independent marginals
+sorted_X1 <- sort(X1)
+sorted_X2 <- sort(X2)
+
+# Step 5: Reorder the marginals according to the copula ranks
+X1_new <- sorted_X1[rank_U1]
+X2_new <- sorted_X2[rank_U2]
+
+# Now X1_new and X2_new have the desired dependence structure from the copula
+# You can inspect the Kendall's tau between the new variables
+# empirical value: 
+cor(X1_new, X2_new, method = "kendall")
+# theoretical value (cf. section on the Gumbel copula):
+1 - 1/theta
+```
+

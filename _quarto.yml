@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "A crash course on copulas"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: sklar.qmd
+        text: Sklar's theorem
+      - href: rank_reordering.qmd
+        text: Rank re-ordering
+      - href: gumbel.qmd
+        text: The Gumbel copula
+      - href: clayton.qmd
+        text: The Clayton copula
+      - about.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    number-sections: true
+
+editor: source
+

@@ -1,0 +1,79 @@
+---
+from: markdown+emoji
+---
+
+## Definition
+
+The bivariate Clayton copula with parameter $\theta > 0$ is defined by, for all $(u,v)\in ]0,1]^2$,
+$$
+C_{\theta}\left( u, v \right) = \left( u^{-\theta} + v^{-\theta} - 1  \right)^{- \frac{1}{\theta}}
+$$
+
+## Kendall's tau
+
+The Kendall's tau of the bivariate Clayton copula with parameter $\theta > 0$ is equal to
+$$
+\frac{\theta}{2 + \theta}
+$$
+
+## Coefficient of upper tail dependency
+
+The coefficient of upper tail dependency of the bivariate Clayton copula with parameter $\theta > 0$ is equal to $0$.
+
+## Coefficient of lower tail dependency
+
+The coefficient of lower tail dependency of the bivariate Clayton copula with parameter $\theta \ge 1$ is equal to
+$$
+2^{-\frac{1}{\theta}}
+$$
+
+## Simulation with R
+
+The following script creates simulations of the bivariate Clayton copula with `R` using the `copula` package, and prints the first 10 simulations.
+
+```{r}
+#| warning: false
+
+# Install the copula package if you haven't already
+# install.packages("copula")
+# Load the copula package
+library(copula)
+
+# Define the parameter for the Clayton copula (e.g., theta = 2)
+theta <- 2
+
+# Create a Clayton copula object
+clayton_copula <- claytonCopula(theta, dim = 2)
+
+# Generate random samples from the Clayton copula
+n_samples <- 1000  # Number of samples
+set.seed(1) # Set the seed to ensure that the results are reproducible
+samples <- rCopula(n_samples, clayton_copula)
+
+# Print the first few samples
+head(samples, n = 10)
+```
+The following script plots the simulations with `R` using the `plotly` package, which creates interactive graphs.
+
+```{r}
+#| warning: false
+
+# Install the plotly package if you haven't already
+# install.packages("plotly")
+# Load the plotly package
+library("plotly")
+
+# Convert the samples matrix to a data frame for plotly
+df <- as.data.frame(samples)
+
+# Rename the columns for clarity (optional)
+colnames(df) <- c("X", "Y")
+
+# Create a dynamic scatter plot with plotly
+plot_ly(df, x = ~X, y = ~Y, type = 'scatter') %>%
+layout(title = list(text = "Bivariate Clayton copula samples - theta = 2"),
+  xaxis = list(title = "X-axis (Column 1)"),
+  yaxis = list(title = "Y-axis (Column 2)")
+)
+```
+
